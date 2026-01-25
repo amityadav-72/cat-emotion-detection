@@ -1,0 +1,115 @@
+* {
+  box-sizing: border-box;
+}
+
+html, body, #root {
+  margin: 0;
+  min-height: 100vh;
+  font-family: "Segoe UI", Arial, sans-serif;
+  background: #f4f6fb;
+  color: #111;
+}
+
+/* ---------- LAYOUT ---------- */
+.page {
+  min-height: calc(100vh - 64px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ---------- CARD ---------- */
+.card {
+  background: white;
+  padding: 32px;
+  width: 100%;
+  max-width: 420px;
+  border-radius: 16px;
+  box-shadow: 0 20px 45px rgba(0,0,0,0.12);
+}
+
+.card h2 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+/* ---------- INPUT ---------- */
+input {
+  width: 100%;
+  padding: 12px;
+  margin-top: 12px;
+  border-radius: 8px;
+  border: 1px solid #d1d5db;
+}
+
+/* ---------- BUTTONS ---------- */
+.primary-btn {
+  width: 100%;
+  padding: 12px;
+  margin-top: 16px;
+  background: #2563eb;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.primary-btn:disabled {
+  opacity: 0.6;
+}
+
+.text-btn {
+  background: none;
+  border: none;
+  color: #2563eb;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0;
+}
+
+/* ---------- LINKS ---------- */
+.link {
+  margin-top: 16px;
+  text-align: center;
+  font-size: 14px;
+}
+
+/* ---------- HEADER ---------- */
+.topbar {
+  height: 64px;
+  background: #0f172a;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+}
+
+.brand {
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.logout-btn {
+  background: transparent;
+  color: white;
+  border: 1px solid rgba(255,255,255,0.4);
+  padding: 6px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  width: auto;   /* 🔥 IMPORTANT */
+}
+
+/* ---------- FEEDBACK ---------- */
+.error { color: #dc2626; margin-top: 10px; }
+.message { color: #16a34a; margin-top: 10px; }
+
+.result {
+  margin-top: 16px;
+  padding: 14px;
+  background: #ecfeff;
+  border-radius: 10px;
+  font-size: 14px;
+}
