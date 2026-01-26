@@ -1,5 +1,7 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
+
 from app.database import SessionLocal
 from app.models import User
 from app.schemas import UserCreate
@@ -7,6 +9,8 @@ from app.auth import hash_password, verify_password, create_access_token
 
 router = APIRouter(prefix="/auth", tags=["Auth"])
 
+
+# ---------- DB DEP ----------
 def get_db():
     db = SessionLocal()
     try:
@@ -14,6 +18,8 @@ def get_db():
     finally:
         db.close()
 
+
+# ---------- REGISTER (JSON) ----------
 @router.post("/register")
 def register(user: UserCreate, db: Session = Depends(get_db)):
     if db.query(User).filter(User.username == user.username).first():
@@ -25,14 +31,34 @@ def register(user: UserCreate, db: Session = Depends(get_db)):
     )
     db.add(new_user)
     db.commit()
+    db.refresh(new_user)
+
     return {"message": "User registered successfully"}
 
+
+# ---------- LOGIN (FORM DATA - OAuth2) ----------
 @router.post("/login")
-def login(user: UserCreate, db: Session = Depends(get_db)):
-    db_user = db.query(User).filter(User.username == user.username).first()
+def login(
+    form_data: OAuth2PasswordRequestForm = Depends(),
+    db: Session = Depends(get_db)
+):
+    db_user = db.query(User).filter(User.username == form_data.username).first()
 
-    if not db_user or not verify_password(user.password, db_user.hashed_password):
-        raise HTTPException(status_code=401, detail="Invalid credentials")
+    if not db_user or not verify_password(
+        form_data.password,
+        db_user.hashed_password
+    ):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid credentials",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
 
-    token = create_access_token({"sub": db_user.username})
-    return {"access_token": token, "token_type": "bearer"}
+    access_token = create_access_token(
+        data={"sub": db_user.username}  # ✅ REQUIRED
+    )
+
+    return {
+        "access_token": access_token,
+        "token_type": "bearer"
+    }

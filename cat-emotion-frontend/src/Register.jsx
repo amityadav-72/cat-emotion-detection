@@ -4,19 +4,31 @@ export default function Register({ setPage }) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [msg, setMsg] = useState("");
+  const [error, setError] = useState("");
 
   const register = async () => {
-    const res = await fetch("http://127.0.0.1:8000/auth/register", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ username, password }),
-    });
+    setMsg("");
+    setError("");
 
-    const data = await res.json();
+    try {
+      const res = await fetch("http://127.0.0.1:8000/auth/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ username, password }),
+      });
 
-    if (data.message) {
-      setMsg("Account created successfully");
-      setTimeout(() => setPage("login"), 1000);
+      const data = await res.json();
+
+      if (res.ok) {
+        setMsg("Account created successfully 🎉");
+        setTimeout(() => setPage("login"), 1200);
+      } else {
+        setError(data.detail || "Registration failed");
+      }
+    } catch (err) {
+      setError("Server error. Please try again.");
     }
   };
 
@@ -25,12 +37,25 @@ export default function Register({ setPage }) {
       <div className="card">
         <h2>Create Account</h2>
 
-        <input placeholder="Username" onChange={e => setUsername(e.target.value)} />
-        <input type="password" placeholder="Password" onChange={e => setPassword(e.target.value)} />
+        <input
+          placeholder="Username"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+        />
 
-        <button className="primary-btn" onClick={register}>Register</button>
+        <input
+          type="password"
+          placeholder="Password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
+
+        <button className="primary-btn" onClick={register}>
+          Register
+        </button>
 
         {msg && <p className="message">{msg}</p>}
+        {error && <p className="error">{error}</p>}
 
         <div className="link">
           Already have an account?{" "}

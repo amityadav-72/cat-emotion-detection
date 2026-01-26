@@ -6,19 +6,33 @@ export default function Login({ setPage, setToken }) {
   const [error, setError] = useState("");
 
   const login = async () => {
-    const res = await fetch("http://127.0.0.1:8000/auth/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ username, password }),
-    });
+    setError("");
 
-    const data = await res.json();
+    const formData = new URLSearchParams();
+    formData.append("username", username);
+    formData.append("password", password);
 
-    if (data.access_token) {
-      setToken(data.access_token);
-      setPage("predict");
-    } else {
-      setError("Invalid username or password");
+    try {
+      const res = await fetch("http://127.0.0.1:8000/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+        body: formData.toString(),
+      });
+
+      const data = await res.json();
+
+      if (res.ok && data.access_token) {
+        // save token
+        localStorage.setItem("token", data.access_token);
+        setToken(data.access_token);
+        setPage("predict");
+      } else {
+        setError("Invalid username or password");
+      }
+    } catch (err) {
+      setError("Server error. Please try again.");
     }
   };
 
@@ -27,10 +41,22 @@ export default function Login({ setPage, setToken }) {
       <div className="card">
         <h2>Login</h2>
 
-        <input placeholder="Username" onChange={e => setUsername(e.target.value)} />
-        <input type="password" placeholder="Password" onChange={e => setPassword(e.target.value)} />
+        <input
+          placeholder="Username"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+        />
 
-        <button className="primary-btn" onClick={login}>Login</button>
+        <input
+          type="password"
+          placeholder="Password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
+
+        <button className="primary-btn" onClick={login}>
+          Login
+        </button>
 
         {error && <p className="error">{error}</p>}
 

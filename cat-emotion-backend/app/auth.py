@@ -8,13 +8,13 @@ SECRET_KEY = "CHANGE_THIS_SECRET"
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 60
 
-# Password hashing (Python 3.13 safe)
+# Password hashing
 pwd_context = CryptContext(
     schemes=["pbkdf2_sha256"],
     deprecated="auto"
 )
 
-# OAuth2 scheme
+# OAuth2 scheme (Swagger relies on this)
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/login")
 
 
@@ -27,7 +27,7 @@ def verify_password(password: str, hashed_password: str) -> bool:
 
 
 # ---------- JWT UTILS ----------
-def create_access_token(data: dict):
+def create_access_token(data: dict) -> str:
     to_encode = data.copy()
     expire = datetime.utcnow() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     to_encode.update({"exp": expire})
@@ -35,9 +35,6 @@ def create_access_token(data: dict):
 
 
 def get_current_user(token: str = Depends(oauth2_scheme)) -> str:
-    """
-    Validates JWT token and returns username
-    """
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Invalid or expired token",
