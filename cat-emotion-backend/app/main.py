@@ -10,6 +10,7 @@ from app.database import Base, engine
 # routers
 from app.routes.auth_routes import router as auth_router
 from app.routes.audio_routes import router as audio_router
+from app.routes.image_routes import router as image_router  # ✅ NEW
 
 
 # create database tables
@@ -33,7 +34,7 @@ app.add_middleware(
 )
 
 
-# root route (fixes Not Found)
+# root route
 @app.get("/")
 def root():
     return {
@@ -51,3 +52,4 @@ def health():
 # include routers
 app.include_router(auth_router)
 app.include_router(audio_router)
+app.include_router(image_router)  # ✅ NEW

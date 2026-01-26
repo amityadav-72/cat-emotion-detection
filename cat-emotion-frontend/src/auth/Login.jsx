@@ -1,9 +1,12 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
-export default function Login({ setPage, setToken }) {
+export default function Login({ setToken }) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+
+  const navigate = useNavigate();
 
   const login = async () => {
     setError("");
@@ -27,7 +30,9 @@ export default function Login({ setPage, setToken }) {
         // save token
         localStorage.setItem("token", data.access_token);
         setToken(data.access_token);
-        setPage("predict");
+
+        // ✅ redirect after login
+        navigate("/dashboard");
       } else {
         setError("Invalid username or password");
       }
@@ -62,7 +67,10 @@ export default function Login({ setPage, setToken }) {
 
         <div className="link">
           Don’t have an account?{" "}
-          <button className="text-btn" onClick={() => setPage("register")}>
+          <button
+            className="text-btn"
+            onClick={() => navigate("/register")}
+          >
             Register
           </button>
         </div>

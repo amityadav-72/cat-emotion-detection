@@ -11,3 +11,6 @@ joblib
 librosa
 tensorflow
 tensorflow-hub
+torch
+torchvision
+torchaudio

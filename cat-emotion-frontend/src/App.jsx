@@ -1,42 +1,86 @@
 import { useState, useEffect } from "react";
-import Login from "./Login";
-import Register from "./Register";
-import Dashboard from "./Dashboard";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+
+import Landing from "./pages/Landing";
+import Login from "./auth/Login";
+import Register from "./auth/Register";
+import Dashboard from "./pages/Dashboard";
+import Predict from "./pages/Predict";
+import History from "./pages/History";
 
 export default function App() {
-  const [page, setPage] = useState("login");
   const [token, setToken] = useState(null);
 
-  // restore session on refresh
+  // Restore session on refresh
   useEffect(() => {
-    const saved = localStorage.getItem("token");
-    if (saved) {
-      setToken(saved);
-      setPage("dashboard");
+    const savedToken = localStorage.getItem("token");
+    if (savedToken) {
+      setToken(savedToken);
     }
   }, []);
 
-  // persist token
+  // Persist token
   useEffect(() => {
     if (token) {
       localStorage.setItem("token", token);
+    } else {
+      localStorage.removeItem("token");
     }
   }, [token]);
 
-  if (page === "login") {
-    return <Login setPage={setPage} setToken={setToken} />;
-  }
+  // Central logout handler
+  const logout = () => {
+    setToken(null);
+    localStorage.removeItem("token");
+  };
 
-  if (page === "register") {
-    return <Register setPage={setPage} />;
-  }
-
-  // ✅ ALWAYS render dashboard when logged in
   return (
-    <Dashboard
-      token={token}
-      setToken={setToken}
-      setPage={setPage}
-    />
+    <BrowserRouter>
+      <Routes>
+        {/* 🌐 Public */}
+        <Route path="/" element={<Landing isAuthenticated={!!token} />} />
+
+        {/* 🔐 Auth */}
+        <Route path="/login" element={<Login setToken={setToken} />} />
+        <Route path="/register" element={<Register />} />
+
+        {/* 🧠 Protected */}
+        <Route
+          path="/dashboard"
+          element={
+            token ? (
+              <Dashboard onLogout={logout} />
+            ) : (
+              <Navigate to="/login" />
+            )
+          }
+        />
+
+        <Route
+          path="/predict"
+          element={
+            token ? (
+              <Predict token={token} onLogout={logout} />
+            ) : (
+              <Navigate to="/login" />
+            )
+          }
+        />
+
+        <Route
+          path="/history"
+          element={
+            token ? (
+              <History token={token} onLogout={logout} />
+            ) : (
+              <Navigate to="/login" />
+            )
+          }
+        />
+
+        {/* ❌ Fallback */}
+        <Route path="*" element={<Navigate to="/" />} />
+      </Routes>
+    </BrowserRouter>
   );
 }

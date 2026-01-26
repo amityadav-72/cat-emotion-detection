@@ -1,16 +1,18 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
-export default function Register({ setPage }) {
+export default function Register() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [msg, setMsg] = useState("");
   const [error, setError] = useState("");
 
+  const navigate = useNavigate();
+
   const register = async () => {
     setMsg("");
     setError("");
 
-    // Basic validation (safe)
     if (!username || !password) {
       setError("Username and password are required");
       return;
@@ -29,7 +31,7 @@ export default function Register({ setPage }) {
 
       if (res.ok) {
         setMsg("Account created successfully 🎉");
-        setTimeout(() => setPage("login"), 1200);
+        setTimeout(() => navigate("/login"), 1200);
       } else {
         setError(data.detail || "Registration failed");
       }
@@ -65,7 +67,10 @@ export default function Register({ setPage }) {
 
         <div className="link">
           Already have an account?{" "}
-          <button className="text-btn" onClick={() => setPage("login")}>
+          <button
+            className="text-btn"
+            onClick={() => navigate("/login")}
+          >
             Login
           </button>
         </div>

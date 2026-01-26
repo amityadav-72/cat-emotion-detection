@@ -5,7 +5,7 @@ from fastapi import APIRouter, UploadFile, File, Depends
 from sqlalchemy.orm import Session
 
 from app.ml.yamnet import extract_features
-from app.ml.load_model import svm_model, label_encoder
+from app.ml.load_model import svm_model
 from app.auth import get_current_user
 from app.database import SessionLocal
 from app.models import PredictionHistory
@@ -13,7 +13,22 @@ from app.models import PredictionHistory
 router = APIRouter(prefix="/audio", tags=["Audio"])
 
 
-# ---------- DB DEPENDENCY ----------
+# 🔊 AUDIO EMOTION CLASSES (MATCH DATASET)
+CLASS_NAMES = [
+    "Angry",
+    "Defence",
+    "Fighting",
+    "Happy",
+    "HuntingMind",
+    "Mating",
+    "MotherCall",
+    "Paining",
+    "Resting",
+    "Warning",
+]
+
+
+# ---------- DB DEP ----------
 def get_db():
     db = SessionLocal()
     try:
@@ -22,13 +37,13 @@ def get_db():
         db.close()
 
 
-# ---------- SOFTMAX FOR CONFIDENCE ----------
+# ---------- SOFTMAX ----------
 def softmax(x):
     e_x = np.exp(x - np.max(x))
     return e_x / e_x.sum(axis=1, keepdims=True)
 
 
-# ---------- PREDICT + SAVE HISTORY ----------
+# ---------- AUDIO PREDICTION ----------
 @router.post("/predict")
 async def predict_audio(
     file: UploadFile = File(...),
@@ -42,21 +57,21 @@ async def predict_audio(
 
     features = extract_features(temp_file)
 
-    decision_scores = svm_model.decision_function(features)
-    probabilities = softmax(decision_scores)
-    confidence = float(np.max(probabilities))
+    scores = svm_model.decision_function(features)
+    probs = softmax(scores)
 
-    prediction = svm_model.predict(features)
-    emotion = label_encoder.inverse_transform(prediction)[0]
+    confidence = float(np.max(probs))
+    predicted_index = int(np.argmax(probs))
+    emotion = CLASS_NAMES[predicted_index]
 
     os.remove(temp_file)
 
-    # SAVE HISTORY
+    # Save history
     history = PredictionHistory(
         username=current_user,
         filename=file.filename,
         emotion=emotion,
-        confidence=confidence,
+        confidence=round(confidence, 2),
     )
     db.add(history)
     db.commit()
@@ -68,7 +83,7 @@ async def predict_audio(
     }
 
 
-# ---------- GET HISTORY ----------
+# ---------- HISTORY ----------
 @router.get("/history")
 def get_prediction_history(
     current_user: str = Depends(get_current_user),
