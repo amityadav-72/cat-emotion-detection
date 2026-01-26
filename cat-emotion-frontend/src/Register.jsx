@@ -10,6 +10,12 @@ export default function Register({ setPage }) {
     setMsg("");
     setError("");
 
+    // Basic validation (safe)
+    if (!username || !password) {
+      setError("Username and password are required");
+      return;
+    }
+
     try {
       const res = await fetch("http://127.0.0.1:8000/auth/register", {
         method: "POST",
@@ -27,7 +33,7 @@ export default function Register({ setPage }) {
       } else {
         setError(data.detail || "Registration failed");
       }
-    } catch (err) {
+    } catch {
       setError("Server error. Please try again.");
     }
   };

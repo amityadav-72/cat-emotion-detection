@@ -1,3 +1,6 @@
+/* ===================== */
+/* GLOBAL RESET */
+/* ===================== */
 * {
   box-sizing: border-box;
 }
@@ -10,7 +13,11 @@ html, body, #root {
   color: #111;
 }
 
-/* ---------- LAYOUT ---------- */
+/* ===================== */
+/* AUTH PAGES (LOGIN / REGISTER) */
+/* (UNCHANGED – SAFE) */
+/* ===================== */
+
 .page {
   min-height: calc(100vh - 64px);
   display: flex;
@@ -18,7 +25,6 @@ html, body, #root {
   justify-content: center;
 }
 
-/* ---------- CARD ---------- */
 .card {
   background: white;
   padding: 32px;
@@ -33,7 +39,6 @@ html, body, #root {
   margin-bottom: 20px;
 }
 
-/* ---------- INPUT ---------- */
 input {
   width: 100%;
   padding: 12px;
@@ -42,7 +47,6 @@ input {
   border: 1px solid #d1d5db;
 }
 
-/* ---------- BUTTONS ---------- */
 .primary-btn {
   width: 100%;
   padding: 12px;
@@ -68,43 +72,21 @@ input {
   padding: 0;
 }
 
-/* ---------- LINKS ---------- */
 .link {
   margin-top: 16px;
   text-align: center;
   font-size: 14px;
 }
 
-/* ---------- HEADER ---------- */
-.topbar {
-  height: 64px;
-  background: #0f172a;
-  color: white;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 24px;
+.error {
+  color: #dc2626;
+  margin-top: 10px;
 }
 
-.brand {
-  font-size: 18px;
-  font-weight: 700;
+.message {
+  color: #16a34a;
+  margin-top: 10px;
 }
-
-.logout-btn {
-  background: transparent;
-  color: white;
-  border: 1px solid rgba(255,255,255,0.4);
-  padding: 6px 14px;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 14px;
-  width: auto;   /* 🔥 IMPORTANT */
-}
-
-/* ---------- FEEDBACK ---------- */
-.error { color: #dc2626; margin-top: 10px; }
-.message { color: #16a34a; margin-top: 10px; }
 
 .result {
   margin-top: 16px;
@@ -112,4 +94,138 @@ input {
   background: #ecfeff;
   border-radius: 10px;
   font-size: 14px;
+}
+
+/* ===================== */
+/* DASHBOARD (SCOPED – SAFE) */
+/* ===================== */
+
+.dash-shell {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ---- TOP BAR ---- */
+.dash-topbar {
+  height: 64px;
+  background: #0f172a;
+  color: white;
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  gap: 16px;
+}
+
+.dash-hamburger {
+  font-size: 22px;
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+}
+
+.dash-brand {
+  flex: 1;
+  text-align: center;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.dash-logout {
+  background: transparent;
+  color: white;
+  border: 1px solid rgba(255,255,255,0.4);
+  padding: 6px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+/* ---- LAYOUT ---- */
+.dash-layout {
+  flex: 1;
+  display: flex;
+  background: #f4f6fb;
+}
+
+/* ---- SIDEBAR ---- */
+.dash-sidebar {
+  width: 260px;
+  background: #111827;
+  color: white;
+  padding: 16px;
+  overflow-y: auto;
+}
+
+.dash-sidebar h3 {
+  margin-bottom: 12px;
+}
+
+.dash-sidebar select {
+  width: 100%;
+  padding: 8px;
+  border-radius: 6px;
+  margin-bottom: 10px;
+}
+
+.dash-history-item {
+  background: #1f2937;
+  padding: 10px;
+  border-radius: 8px;
+  margin-bottom: 8px;
+  cursor: pointer;
+}
+
+.dash-history-item:hover {
+  background: #374151;
+}
+
+.dash-history-time {
+  font-size: 12px;
+  opacity: 0.7;
+}
+
+/* ---- CENTER CONTENT ---- */
+.dash-content {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding-top: 80px;
+}
+
+/* ---- PREDICTION CARD ---- */
+.dash-card {
+  background: white;
+  width: 380px;
+  padding: 32px;
+  border-radius: 18px;
+  text-align: center;
+  box-shadow: 0 25px 50px rgba(0,0,0,0.12);
+}
+
+.dash-card h2 {
+  margin-bottom: 16px;
+}
+
+/* ===================== */
+/* MOBILE RESPONSIVE */
+/* ===================== */
+
+@media (max-width: 768px) {
+  .dash-sidebar {
+    position: absolute;
+    left: 0;
+    top: 64px;
+    height: calc(100vh - 64px);
+    z-index: 10;
+  }
+
+  .dash-content {
+    padding-top: 40px;
+  }
+
+  .dash-card {
+    width: 90%;
+  }
 }

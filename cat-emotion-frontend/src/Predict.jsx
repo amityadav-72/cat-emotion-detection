@@ -1,61 +1,65 @@
 import { useState } from "react";
 
-export default function Predict({ token, setPage, setToken }) {
+export default function Predict({ token, onDone }) {
   const [file, setFile] = useState(null);
-  const [result, setResult] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
   const predict = async () => {
-    const formData = new FormData();
-    formData.append("file", file);
+    if (!file) return;
 
-    const res = await fetch("http://127.0.0.1:8000/audio/predict", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-      body: formData,
-    });
+    setLoading(true);
+    setError("");
 
-    const data = await res.json();
-    setResult(data);
-  };
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
 
-  const logout = () => {
-    setToken(null);
-    setPage("login");
+      const res = await fetch("http://127.0.0.1:8000/audio/predict", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        body: formData,
+      });
+
+      const data = await res.json();
+      setLoading(false);
+
+      if (!res.ok) {
+        setError(data.detail || "Prediction failed");
+        return;
+      }
+
+      onDone({
+        emotion: data.predicted_emotion || data.emotion,
+        confidence: data.confidence,
+      });
+    } catch {
+      setLoading(false);
+      setError("Server error. Please try again.");
+    }
   };
 
   return (
     <>
-      <header className="topbar">
-        <div className="brand">🐱 Cat Emotion Detection</div>
-        <button className="logout-btn" onClick={logout}>Logout</button>
-      </header>
+      <h2>Emotion Prediction</h2>
 
-      <div className="page">
-        <div className="card">
-          <h2>Emotion Prediction</h2>
+      <input
+        type="file"
+        accept="audio/*"
+        onChange={(e) => setFile(e.target.files[0])}
+      />
 
-          <input
-            type="file"
-            accept="audio/*,.wav,.mp3,.mpeg,.mpga,.m4a,.aac,.ogg,.flac,.webm"
-            onChange={e => setFile(e.target.files[0])}
-          />
+      <button
+        className="primary-btn"
+        disabled={!file || loading}
+        onClick={predict}
+      >
+        {loading ? "Predicting..." : "Predict Emotion"}
+      </button>
 
-          <button className="primary-btn" disabled={!file} onClick={predict}>
-            Predict Emotion
-          </button>
-
-          {result && (
-            <div className="result">
-              <p><b>Emotion:</b> {result.predicted_emotion}</p>
-              {result.confidence !== undefined && (
-                <p><b>Confidence:</b> {Math.round(result.confidence * 100)}%</p>
-              )}
-            </div>
-          )}
-        </div>
-      </div>
+      {error && <p className="error">{error}</p>}
     </>
   );
 }
