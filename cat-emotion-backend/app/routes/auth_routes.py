@@ -5,7 +5,12 @@ from sqlalchemy.orm import Session
 from app.database import SessionLocal
 from app.models import User
 from app.schemas import UserCreate
-from app.auth import hash_password, verify_password, create_access_token
+from app.auth import (
+    hash_password,
+    verify_password,
+    create_access_token,
+    get_current_user,   # ✅ IMPORT FOR LOGOUT
+)
 
 router = APIRouter(prefix="/auth", tags=["Auth"])
 
@@ -62,3 +67,16 @@ def login(
         "access_token": access_token,
         "token_type": "bearer"
     }
+
+
+# ---------- LOGOUT (JWT SAFE) ----------
+@router.post("/logout")
+def logout(current_user: str = Depends(get_current_user)):
+    """
+    JWT is stateless, so logout is handled client-side.
+    This endpoint exists for:
+    - validation
+    - logging
+    - future token blacklisting
+    """
+    return {"message": "Logged out successfully"}
