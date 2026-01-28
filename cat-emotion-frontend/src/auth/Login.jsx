@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import OAuthLogin from "./OAuthLogin";
 
 export default function Login({ setToken }) {
   const [username, setUsername] = useState("");
@@ -27,11 +28,8 @@ export default function Login({ setToken }) {
       const data = await res.json();
 
       if (res.ok && data.access_token) {
-        // save token
         localStorage.setItem("token", data.access_token);
         setToken(data.access_token);
-
-        // ✅ redirect after login
         navigate("/dashboard");
       } else {
         setError("Invalid username or password");
@@ -65,7 +63,16 @@ export default function Login({ setToken }) {
 
         {error && <p className="error">{error}</p>}
 
-        <div className="link">
+        {/* -------- OR Divider -------- */}
+        <div style={{ margin: "20px 0", textAlign: "center", color: "#888" }}>
+          — OR —
+        </div>
+
+        {/* ✅ GOOGLE LOGIN BUTTON */}
+        <OAuthLogin />
+
+        {/* -------- Register -------- */}
+        <div className="link" style={{ marginTop: "15px" }}>
           Don’t have an account?{" "}
           <button
             className="text-btn"

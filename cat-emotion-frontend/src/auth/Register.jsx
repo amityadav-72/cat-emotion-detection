@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import OAuthLogin from "./OAuthLogin";
 
 export default function Register() {
   const [username, setUsername] = useState("");
@@ -45,6 +46,7 @@ export default function Register() {
       <div className="card">
         <h2>Create Account</h2>
 
+        {/* -------- NORMAL REGISTER -------- */}
         <input
           placeholder="Username"
           value={username}
@@ -65,7 +67,16 @@ export default function Register() {
         {msg && <p className="message">{msg}</p>}
         {error && <p className="error">{error}</p>}
 
-        <div className="link">
+        {/* -------- OR Divider -------- */}
+        <div style={{ margin: "20px 0", textAlign: "center", color: "#888" }}>
+          — OR —
+        </div>
+
+        {/* -------- REGISTER WITH GOOGLE -------- */}
+        <OAuthLogin />
+
+        {/* -------- LOGIN -------- */}
+        <div className="link" style={{ marginTop: "15px" }}>
           Already have an account?{" "}
           <button
             className="text-btn"

@@ -3,6 +3,9 @@ import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import "../App.css";
 
+// ✅ IMPORT IMAGE FROM src/assets
+import catImage from "../assets/cat-image.png";
+
 const Landing = () => {
   const navigate = useNavigate();
 
@@ -42,13 +45,13 @@ const Landing = () => {
 
         <div className="landing-image">
           <img
-            src="/cat-image.png"
+            src={catImage}
             alt="AI analyzing cat emotion"
           />
         </div>
       </section>
 
-      {/* ===== TRUST STRIP ===== */}
+      {/* ===== WHY ===== */}
       <section className="how-section">
         <h2>Why MeowMood?</h2>
 
@@ -87,46 +90,39 @@ const Landing = () => {
           <div className="how-card">
             <span>1</span>
             <h3>Upload</h3>
-            <p>
-              Upload an image or audio clip of your cat.
-            </p>
+            <p>Upload an image or audio clip of your cat.</p>
           </div>
 
           <div className="how-card">
             <span>2</span>
             <h3>AI Analysis</h3>
-            <p>
-              Our model analyzes facial cues or vocal patterns.
-            </p>
+            <p>Our model analyzes facial cues or vocal patterns.</p>
           </div>
 
           <div className="how-card">
             <span>3</span>
             <h3>Result</h3>
-            <p>
-              Receive emotion prediction with confidence score.
-            </p>
+            <p>Receive emotion prediction with confidence score.</p>
           </div>
         </div>
       </section>
 
       {/* ===== FINAL CTA ===== */}
       <section className="landing-cta">
-  <div className="landing-cta-inner">
-    <h2>Start Understanding Your Cat Today 🐾</h2>
-    <p>
-      Join MeowMood and discover what your cat is trying to tell you.
-    </p>
+        <div className="landing-cta-inner">
+          <h2>Start Understanding Your Cat Today 🐾</h2>
+          <p>
+            Join MeowMood and discover what your cat is trying to tell you.
+          </p>
 
-    <button
-      className="cta-primary"
-      onClick={() => navigate("/login")}
-    >
-      Try MeowMood Now
-    </button>
-  </div>
-</section>
-
+          <button
+            className="cta-primary"
+            onClick={() => navigate("/login")}
+          >
+            Try MeowMood Now
+          </button>
+        </div>
+      </section>
     </>
   );
 };
