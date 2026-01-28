@@ -1,19 +1,29 @@
 import os
+from dotenv import load_dotenv
+
+# ✅ Load environment variables FIRST
+load_dotenv()
+
+# Reduce TensorFlow logs
 os.environ["TF_CPP_MIN_LOG_LEVEL"] = "2"
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-# database
+# Database
 from app.database import Base, engine
 
-# routers
+# Routers
 from app.routes.auth_routes import router as auth_router
+from app.routes.oauth_routes import router as oauth_router
 from app.routes.audio_routes import router as audio_router
-from app.routes.image_routes import router as image_router  # ✅ NEW
+from app.routes.image_routes import router as image_router
+from app.routes.location_routes import router as location_router
+from app.routes.chatbot_routes import router as chatbot_router
+from app.routes.community_routes import router as community_router
 
 
-# create database tables
+# ✅ Create DB tables
 Base.metadata.create_all(bind=engine)
 
 
@@ -23,8 +33,7 @@ app = FastAPI(
     version="1.0.0"
 )
 
-
-# CORS configuration (Vite + React)
+# ✅ CORS (React / Vite)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["http://localhost:5173"],
@@ -34,7 +43,7 @@ app.add_middleware(
 )
 
 
-# root route
+# ---------- BASIC ROUTES ----------
 @app.get("/")
 def root():
     return {
@@ -43,13 +52,16 @@ def root():
     }
 
 
-# health check
 @app.get("/health")
 def health():
     return {"ok": True}
 
 
-# include routers
+# ---------- ROUTERS ----------
 app.include_router(auth_router)
+app.include_router(oauth_router)   
 app.include_router(audio_router)
-app.include_router(image_router)  # ✅ NEW
+app.include_router(image_router)
+app.include_router(location_router)
+app.include_router(chatbot_router)
+app.include_router(community_router)

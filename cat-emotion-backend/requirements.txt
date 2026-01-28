@@ -14,3 +14,4 @@ tensorflow-hub
 torch
 torchvision
 torchaudio
+requests

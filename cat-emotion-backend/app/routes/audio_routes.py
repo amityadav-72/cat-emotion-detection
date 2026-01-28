@@ -6,7 +6,7 @@ from sqlalchemy.orm import Session
 
 from app.ml.yamnet import extract_features
 from app.ml.load_model import svm_model
-from app.auth import get_current_user
+from app.auth_utils import get_current_user
 from app.database import SessionLocal
 from app.models import PredictionHistory
 

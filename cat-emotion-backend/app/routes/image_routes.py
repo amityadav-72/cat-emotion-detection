@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 from PIL import Image
 import io
 
-from app.auth import get_current_user
+from app.auth_utils import get_current_user
 from app.database import SessionLocal
 from app.models import PredictionHistory
 from app.ml.image_model import predict_image

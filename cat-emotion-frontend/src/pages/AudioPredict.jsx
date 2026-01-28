@@ -78,7 +78,7 @@ export default function AudioPredict({ token, onLogout }) {
         <h1>Cat Audio Emotion Detection 🔊🐱</h1>
 
         <div className="predict-card">
-          <input type="file" accept="audio/*" onChange={handleAudioChange} />
+          <input type="file"  accept=".mp3,.wav,.mpeg,.mpga,.m4a,.aac,.ogg,.flac,.webm,audio/*" onChange={handleAudioChange} />
 
           <button className="primary-btn" onClick={predictAudio}>
             {loading ? "Analyzing..." : "Predict Audio Emotion"}

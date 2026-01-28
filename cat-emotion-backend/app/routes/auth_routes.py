@@ -5,14 +5,17 @@ from sqlalchemy.orm import Session
 from app.database import SessionLocal
 from app.models import User
 from app.schemas import UserCreate
-from app.auth import (
+from app.auth_utils import (
     hash_password,
     verify_password,
     create_access_token,
-    get_current_user,   # ✅ IMPORT FOR LOGOUT
+    get_current_user,
 )
 
-router = APIRouter(prefix="/auth", tags=["Auth"])
+router = APIRouter(
+    prefix="/auth",
+    tags=["Auth"]
+)
 
 
 # ---------- DB DEP ----------
@@ -24,7 +27,7 @@ def get_db():
         db.close()
 
 
-# ---------- REGISTER (JSON) ----------
+# ---------- REGISTER ----------
 @router.post("/register")
 def register(user: UserCreate, db: Session = Depends(get_db)):
     if db.query(User).filter(User.username == user.username).first():
@@ -34,6 +37,7 @@ def register(user: UserCreate, db: Session = Depends(get_db)):
         username=user.username,
         hashed_password=hash_password(user.password)
     )
+
     db.add(new_user)
     db.commit()
     db.refresh(new_user)
@@ -41,17 +45,17 @@ def register(user: UserCreate, db: Session = Depends(get_db)):
     return {"message": "User registered successfully"}
 
 
-# ---------- LOGIN (FORM DATA - OAuth2) ----------
+# ---------- LOGIN ----------
 @router.post("/login")
 def login(
     form_data: OAuth2PasswordRequestForm = Depends(),
     db: Session = Depends(get_db)
 ):
-    db_user = db.query(User).filter(User.username == form_data.username).first()
+    user = db.query(User).filter(User.username == form_data.username).first()
 
-    if not db_user or not verify_password(
+    if not user or not verify_password(
         form_data.password,
-        db_user.hashed_password
+        user.hashed_password
     ):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -60,7 +64,7 @@ def login(
         )
 
     access_token = create_access_token(
-        data={"sub": db_user.username}  # ✅ REQUIRED
+        data={"sub": user.username}
     )
 
     return {
@@ -69,14 +73,7 @@ def login(
     }
 
 
-# ---------- LOGOUT (JWT SAFE) ----------
+# ---------- LOGOUT ----------
 @router.post("/logout")
 def logout(current_user: str = Depends(get_current_user)):
-    """
-    JWT is stateless, so logout is handled client-side.
-    This endpoint exists for:
-    - validation
-    - logging
-    - future token blacklisting
-    """
     return {"message": "Logged out successfully"}
