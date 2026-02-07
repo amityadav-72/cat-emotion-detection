@@ -45,15 +45,6 @@ env/
 .venv/
 
 # =====================
-# ML / Model files
-# (remove if you WANT to commit models)
-# =====================
-*.pkl
-*.h5
-*.joblib
-models/
-
-# =====================
 # Jupyter
 # =====================
 .ipynb_checkpoints/
