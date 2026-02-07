@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import OAuthLogin from "./OAuthLogin";
 
+
 export default function Login({ setToken }) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -28,8 +29,13 @@ export default function Login({ setToken }) {
       const data = await res.json();
 
       if (res.ok && data.access_token) {
+        // ✅ STORE TOKEN
         localStorage.setItem("token", data.access_token);
         setToken(data.access_token);
+
+        // ✅ STORE USERNAME (THIS FIXES "ANONYMOUS")
+        localStorage.setItem("username", username);
+
         navigate("/dashboard");
       } else {
         setError("Invalid username or password");
@@ -63,15 +69,12 @@ export default function Login({ setToken }) {
 
         {error && <p className="error">{error}</p>}
 
-        {/* -------- OR Divider -------- */}
         <div style={{ margin: "20px 0", textAlign: "center", color: "#888" }}>
           — OR —
         </div>
 
-        {/* ✅ GOOGLE LOGIN BUTTON */}
         <OAuthLogin />
 
-        {/* -------- Register -------- */}
         <div className="link" style={{ marginTop: "15px" }}>
           Don’t have an account?{" "}
           <button

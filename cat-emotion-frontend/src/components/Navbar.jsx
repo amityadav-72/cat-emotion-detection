@@ -1,12 +1,16 @@
-import React from "react";
+import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import "../App.css";
+import "./Navbar.css";
 
 const Navbar = ({ isAuthenticated, onLogout }) => {
   const navigate = useNavigate();
+  const [open, setOpen] = useState(false);
+
+  const closeMenu = () => setOpen(false);
 
   const handleLogout = () => {
     onLogout();
+    closeMenu();
     navigate("/login");
   };
 
@@ -16,27 +20,27 @@ const Navbar = ({ isAuthenticated, onLogout }) => {
         🐱 <span>MeowMood</span>
       </div>
 
-      <ul className="navbar-links">
+      {/* Hamburger */}
+      <div className="hamburger" onClick={() => setOpen(!open)}>
+        {open ? "✕" : "☰"}
+      </div>
+
+      <ul className={`navbar-links ${open ? "active" : ""}`}>
         {!isAuthenticated ? (
           <>
-            <li>
-              <Link to="/">Home</Link>
-            </li>
-            <li>
-              <Link to="/login">Login</Link>
-            </li>
-            <li>
-              <Link to="/register">Register</Link>
-            </li>
+            <li><Link to="/" onClick={closeMenu}>Home</Link></li>
+            <li><Link to="/login" onClick={closeMenu}>Login</Link></li>
+            <li><Link to="/register" onClick={closeMenu}>Register</Link></li>
           </>
         ) : (
           <>
-            <li>
-              <Link to="/dashboard">Dashboard</Link>
-            </li>
-            <li>
-              <Link to="/predict">Detect Emotion</Link>
-            </li>
+            <li><Link to="/dashboard" onClick={closeMenu}>Dashboard</Link></li>
+            <li><Link to="/predict" onClick={closeMenu}>Detect Emotion</Link></li>
+            <li><Link to="/history" onClick={closeMenu}>History</Link></li>
+            <li><Link to="/nearby-services" onClick={closeMenu}>Nearby Services</Link></li>
+            <li><Link to="/catzone" onClick={closeMenu}>Cat Zone</Link></li>
+            <li><Link to="/chatbot" onClick={closeMenu}>Chatbot</Link></li>
+
             <li>
               <button className="logout-btn" onClick={handleLogout}>
                 Logout

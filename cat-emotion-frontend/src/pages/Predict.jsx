@@ -1,145 +1,155 @@
 import { useState } from "react";
-import Navbar from "../components/Navbar";
-import UploadCard from "../components/UploadCard";
-import ResultCard from "../components/ResultCard";
-import "../App.css";
+import "../components/Predict.css";
 
-export default function Predict({ token, onLogout }) {
-  const [file, setFile] = useState(null);
-  const [preview, setPreview] = useState(null);
-  const [result, setResult] = useState(null);
-  const [loading, setLoading] = useState(false);
+export default function Predict({ token }) {
+  const [imageFile, setImageFile] = useState(null);
+  const [audioFile, setAudioFile] = useState(null);
+
+  const [imagePreview, setImagePreview] = useState(null);
+  const [imageResult, setImageResult] = useState(null);
+  const [audioResult, setAudioResult] = useState(null);
+
+  const [loadingImage, setLoadingImage] = useState(false);
+  const [loadingAudio, setLoadingAudio] = useState(false);
+
   const [error, setError] = useState("");
 
-  // ---------- FILE SELECT ----------
-  const handleFileChange = (e) => {
-    const selected = e.target.files[0];
-    if (!selected) return;
+  /* ===== IMAGE ===== */
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
 
-    setFile(selected);
-    setResult(null);
+    setImageFile(file);
+    setImagePreview(URL.createObjectURL(file));
+    setImageResult(null);
     setError("");
-
-    // preview only for images
-    if (selected.type.startsWith("image/")) {
-      setPreview(URL.createObjectURL(selected));
-    } else {
-      setPreview(null);
-    }
   };
 
-  // ---------- PREDICT ----------
-  const predict = async () => {
-    if (!file) {
-      setError("Please upload an image or audio file.");
+  const predictImage = async () => {
+    if (!imageFile) {
+      setError("Please upload an image.");
       return;
     }
 
-    let endpoint = "";
-    let isImage = false;
-
-    if (file.type.startsWith("image/")) {
-      endpoint = "http://127.0.0.1:8000/image/predict";
-      isImage = true;
-    } else if (file.type.startsWith("audio/")) {
-      endpoint = "http://127.0.0.1:8000/audio/predict";
-    } else {
-      setError("Unsupported file type.");
-      return;
-    }
-
-    setLoading(true);
-    setError("");
+    setLoadingImage(true);
 
     const formData = new FormData();
-    formData.append("file", file);
+    formData.append("file", imageFile);
 
     try {
-      const res = await fetch(endpoint, {
+      const res = await fetch("http://127.0.0.1:8000/image/predict", {
         method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        headers: { Authorization: `Bearer ${token}` },
         body: formData,
       });
 
       const data = await res.json();
       if (!res.ok) throw new Error();
 
-      // normalize response
-      setResult({
-        emotion: isImage ? data.predicted_emotion : data.predicted_emotion,
-        confidence: data.confidence,
-        filename: data.filename || null,
-        type: isImage ? "image" : "audio",
-      });
+      setImageResult(data);
     } catch {
-      setError("Prediction failed. Try another file.");
+      setError("Image prediction failed.");
     } finally {
-      setLoading(false);
+      setLoadingImage(false);
+    }
+  };
+
+  /* ===== AUDIO ===== */
+  const handleAudioChange = (e) => {
+    setAudioFile(e.target.files[0]);
+    setAudioResult(null);
+    setError("");
+  };
+
+  const predictAudio = async () => {
+    if (!audioFile) {
+      setError("Please upload an audio file.");
+      return;
+    }
+
+    setLoadingAudio(true);
+
+    const formData = new FormData();
+    formData.append("file", audioFile);
+
+    try {
+      const res = await fetch("http://127.0.0.1:8000/audio/predict", {
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}` },
+        body: formData,
+      });
+
+      const data = await res.json();
+      if (!res.ok) throw new Error();
+
+      setAudioResult(data);
+    } catch {
+      setError("Audio prediction failed.");
+    } finally {
+      setLoadingAudio(false);
     }
   };
 
   return (
-    <>
-      <Navbar isAuthenticated={true} onLogout={onLogout} />
+    <div className="predict-wrapper">
+      <h1>Cat Emotion Detection 🐱</h1>
+      <p className="predict-subtitle">
+        Upload an image or audio file to detect your cat’s emotion.
+      </p>
 
-      <div className="predict-page">
-        <h1>Cat Emotion Detection 🐱</h1>
-        <p className="subtitle">
-          Upload an image or audio file to detect your cat’s emotion.
-        </p>
-
-        {/* ===== UPLOAD ===== */}
+      <div className="predict-grid">
+        {/* IMAGE CARD */}
         <div className="predict-card">
-          <input
-            type="file"
-            accept="image/*,audio/*"
-            onChange={handleFileChange}
-          />
+          <h2>🖼️ Image Emotion</h2>
 
-          {preview && (
+          <input type="file" accept="image/*" onChange={handleImageChange} />
+
+          {imagePreview && (
             <img
-              src={preview}
+              src={imagePreview}
               alt="Preview"
               className="image-preview"
             />
           )}
 
-          <button
-            className="primary-btn"
-            onClick={predict}
-            disabled={loading}
-          >
-            {loading ? "Analyzing..." : "Predict Emotion"}
+          <button onClick={predictImage} disabled={loadingImage}>
+            {loadingImage ? "Analyzing..." : "Predict Image Emotion"}
           </button>
 
-          {error && <p className="error">{error}</p>}
+          {imageResult && (
+            <div className="result-box">
+              <p><b>Emotion:</b> {imageResult.predicted_emotion}</p>
+              <p>
+                <b>Confidence:</b>{" "}
+                {Math.round(imageResult.confidence * 100)}%
+              </p>
+            </div>
+          )}
         </div>
 
-        {/* ===== RESULT ===== */}
-        {result && (
-          <div className="result-card">
-            <h2>Prediction Result</h2>
+        {/* AUDIO CARD */}
+        <div className="predict-card">
+          <h2>🔊 Audio Emotion</h2>
 
-            {result.filename && (
-              <p><b>File:</b> {result.filename}</p>
-            )}
+          <input type="file" accept="audio/*" onChange={handleAudioChange} />
 
-            <p className="emotion">
-              Emotion: <span>{result.emotion}</span>
-            </p>
+          <button onClick={predictAudio} disabled={loadingAudio}>
+            {loadingAudio ? "Analyzing..." : "Predict Audio Emotion"}
+          </button>
 
-            <p>
-              Confidence: {Math.round(result.confidence * 100)}%
-            </p>
-
-            <p>
-              Type: <b>{result.type.toUpperCase()}</b>
-            </p>
-          </div>
-        )}
+          {audioResult && (
+            <div className="result-box">
+              <p><b>Emotion:</b> {audioResult.predicted_emotion}</p>
+              <p>
+                <b>Confidence:</b>{" "}
+                {Math.round(audioResult.confidence * 100)}%
+              </p>
+            </div>
+          )}
+        </div>
       </div>
-    </>
+
+      {error && <p className="predict-error">{error}</p>}
+    </div>
   );
 }

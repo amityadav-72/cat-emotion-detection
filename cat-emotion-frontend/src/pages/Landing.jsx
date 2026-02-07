@@ -1,6 +1,5 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import Navbar from "../components/Navbar";
 import "../App.css";
 
 // ✅ IMPORT IMAGE FROM src/assets
@@ -11,8 +10,6 @@ const Landing = () => {
 
   return (
     <>
-      <Navbar />
-
       {/* ===== HERO ===== */}
       <section className="landing-hero">
         <div className="landing-text">

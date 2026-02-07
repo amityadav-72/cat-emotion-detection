@@ -1,5 +1,5 @@
 import EmotionBar from "./EmotionBar";
-import "../App.css";
+import "./ResultCard.css";
 
 const emotionExplanation = {
   Happy: "Relaxed posture, open eyes, and neutral ears suggest happiness.",
@@ -10,23 +10,32 @@ const emotionExplanation = {
 };
 
 export default function ResultCard({ result }) {
-  if (!result) return null;
+  // Fallback for Dashboard (no prediction yet)
+  const data = result || {
+    emotion: "Relaxed",
+    confidence: {
+      Happy: 0.2,
+      Angry: 0.05,
+      Relaxed: 0.6,
+      Sad: 0.1,
+      Fearful: 0.05,
+    },
+  };
 
   const explanation =
-    emotionExplanation[result.emotion] ||
+    emotionExplanation[data.emotion] ||
     "Facial features contributed to this prediction.";
 
   return (
     <div className="result-card">
-      <h2>Prediction Result</h2>
+      <h3 className="result-title">🐱 Emotion Detected</h3>
 
-      <p className="emotion">
-        Emotion: <span>{result.emotion}</span>
-      </p>
+      <div className="emotion-highlight">
+        {data.emotion}
+      </div>
 
-      <EmotionBar confidence={result.confidence} />
+      <EmotionBar confidence={data.confidence} />
 
-      {/* 🧠 Explanation */}
       <div className="explanation">
         <h4>Why this emotion?</h4>
         <p>{explanation}</p>

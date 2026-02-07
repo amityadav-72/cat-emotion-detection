@@ -1,17 +1,27 @@
 import { useState, useEffect } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
+import Navbar from "./components/Navbar";
+
+// Public pages
 import Landing from "./pages/Landing";
 import Login from "./auth/Login";
 import Register from "./auth/Register";
+
+// Protected pages
 import Dashboard from "./pages/Dashboard";
 import Predict from "./pages/Predict";
 import History from "./pages/History";
+import NearbyServices from "./pages/NearbyServices";
+import CatZone from "./pages/CatZone";
 
-export default function App() {
+// ✅ Chatbot page (simple Chatbot.jsx)
+import Chatbot from "./pages/Chatbot";
+
+function App() {
   const [token, setToken] = useState(null);
 
-  // Restore session on refresh
+  // Restore token on refresh
   useEffect(() => {
     const savedToken = localStorage.getItem("token");
     if (savedToken) {
@@ -28,28 +38,48 @@ export default function App() {
     }
   }, [token]);
 
-  // Central logout handler
   const logout = () => {
     setToken(null);
     localStorage.removeItem("token");
   };
 
+  const isAuthenticated = Boolean(token);
+
   return (
     <BrowserRouter>
+      <Navbar isAuthenticated={isAuthenticated} onLogout={logout} />
+
       <Routes>
-        {/* 🌐 Public */}
-        <Route path="/" element={<Landing isAuthenticated={!!token} />} />
+        {/* ===== Public Routes ===== */}
+        <Route
+          path="/"
+          element={<Landing isAuthenticated={isAuthenticated} />}
+        />
 
-        {/* 🔐 Auth */}
-        <Route path="/login" element={<Login setToken={setToken} />} />
-        <Route path="/register" element={<Register />} />
+        <Route
+          path="/login"
+          element={
+            isAuthenticated ? (
+              <Navigate to="/dashboard" />
+            ) : (
+              <Login setToken={setToken} />
+            )
+          }
+        />
 
-        {/* 🧠 Protected */}
+        <Route
+          path="/register"
+          element={
+            isAuthenticated ? <Navigate to="/dashboard" /> : <Register />
+          }
+        />
+
+        {/* ===== Protected Routes ===== */}
         <Route
           path="/dashboard"
           element={
-            token ? (
-              <Dashboard onLogout={logout} />
+            isAuthenticated ? (
+              <Dashboard token={token} />
             ) : (
               <Navigate to="/login" />
             )
@@ -59,8 +89,8 @@ export default function App() {
         <Route
           path="/predict"
           element={
-            token ? (
-              <Predict token={token} onLogout={logout} />
+            isAuthenticated ? (
+              <Predict token={token} />
             ) : (
               <Navigate to="/login" />
             )
@@ -70,17 +100,41 @@ export default function App() {
         <Route
           path="/history"
           element={
-            token ? (
-              <History token={token} onLogout={logout} />
+            isAuthenticated ? (
+              <History token={token} />
             ) : (
               <Navigate to="/login" />
             )
           }
         />
 
-        {/* ❌ Fallback */}
+        <Route
+          path="/nearby-services"
+          element={
+            isAuthenticated ? <NearbyServices /> : <Navigate to="/login" />
+          }
+        />
+
+        <Route
+          path="/catzone"
+          element={
+            isAuthenticated ? <CatZone /> : <Navigate to="/login" />
+          }
+        />
+
+        {/* ===== Independent Chatbot Page ===== */}
+        <Route
+          path="/chatbot"
+          element={
+            isAuthenticated ? <Chatbot /> : <Navigate to="/login" />
+          }
+        />
+
+        {/* ===== Fallback ===== */}
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
     </BrowserRouter>
   );
 }
+
+export default App;

@@ -1,0 +1,82 @@
+/* ===== NAVBAR ===== */
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 24px;
+  background: #fde047;           /* light yellow */
+  position: relative;
+  z-index: 1000;
+  border-bottom: 1px solid #facc15;
+}
+
+.navbar-logo {
+  font-size: 22px;
+  font-weight: 700;
+  cursor: pointer;
+  color: #2563eb;
+}
+
+/* ===== LINKS ===== */
+.navbar-links {
+  list-style: none;
+  display: flex;
+  gap: 18px;
+}
+
+.navbar-links li a {
+  text-decoration: none;
+  color: #1f2933;
+  font-weight: 500;
+}
+
+.navbar-links li a:hover {
+  color: #2563eb;
+}
+
+/* ===== LOGOUT ===== */
+.logout-btn {
+  background: #1f2933;
+  color: white;
+  border: none;
+  padding: 6px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+/* ===== HAMBURGER ===== */
+.hamburger {
+  display: none;
+  font-size: 26px;
+  cursor: pointer;
+  color: #2563eb;
+  z-index: 2000;
+}
+
+/* ===== MOBILE ===== */
+@media (max-width: 768px) {
+  .hamburger {
+    display: block;
+  }
+
+  .navbar-links {
+    position: absolute;
+    top: 60px;
+    left: 0;
+    width: 100%;
+    background: #fffbea;
+    flex-direction: column;
+    padding: 24px;
+    display: none;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+    text-align: center;
+  }
+
+  .navbar-links.active {
+    display: flex;
+  }
+
+  .navbar-links li {
+    margin-bottom: 18px;
+  }
+}
