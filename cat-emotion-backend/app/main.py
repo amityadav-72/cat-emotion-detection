@@ -16,13 +16,11 @@ from app.database import Base, engine
 
 # Routers
 from app.routes.auth_routes import router as auth_router
-from app.routes.oauth_routes import router as oauth_router
 from app.routes.audio_routes import router as audio_router
 from app.routes.image_routes import router as image_router
 from app.routes.location_routes import router as location_router
 from app.routes.chatbot_routes import router as chatbot_router
 from app.routes.community_routes import router as community_router
-
 
 # ✅ Create DB tables
 Base.metadata.create_all(bind=engine)
@@ -64,8 +62,7 @@ def health():
     return {"ok": True}
 
 # ---------- ROUTERS ----------
-app.include_router(auth_router)
-app.include_router(oauth_router)
+app.include_router(auth_router)        # Firebase → JWT
 app.include_router(audio_router)
 app.include_router(image_router)
 app.include_router(location_router)

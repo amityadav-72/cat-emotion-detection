@@ -1,59 +1,61 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import OAuthLogin from "./OAuthLogin";
+import {
+  signInWithEmailAndPassword,
+  signInWithPopup,
+} from "firebase/auth";
 
+import { auth, googleProvider } from "../firebase";
+import "./Auth.css";
 
-export default function Login({ setToken }) {
-  const [username, setUsername] = useState("");
+export default function Login() {
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
 
-  const login = async () => {
+  // 🔐 Email login (Firebase only)
+  const handleLogin = async () => {
     setError("");
-
-    const formData = new URLSearchParams();
-    formData.append("username", username);
-    formData.append("password", password);
+    setLoading(true);
 
     try {
-      const res = await fetch("http://127.0.0.1:8000/auth/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
-        },
-        body: formData.toString(),
-      });
-
-      const data = await res.json();
-
-      if (res.ok && data.access_token) {
-        // ✅ STORE TOKEN
-        localStorage.setItem("token", data.access_token);
-        setToken(data.access_token);
-
-        // ✅ STORE USERNAME (THIS FIXES "ANONYMOUS")
-        localStorage.setItem("username", username);
-
-        navigate("/dashboard");
-      } else {
-        setError("Invalid username or password");
-      }
+      await signInWithEmailAndPassword(auth, email, password);
+      navigate("/dashboard");
     } catch (err) {
-      setError("Server error. Please try again.");
+      setError(err.message.replace("Firebase:", ""));
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // 🔐 Google login (Firebase only)
+  const handleGoogleLogin = async () => {
+    setError("");
+    setLoading(true);
+
+    try {
+      await signInWithPopup(auth, googleProvider);
+      navigate("/dashboard");
+    } catch (err) {
+      setError(err.message.replace("Firebase:", ""));
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="page">
-      <div className="card">
-        <h2>Login</h2>
+    <div className="auth-container">
+      <div className="auth-card">
+        <h2>Login to MeowMood</h2>
 
         <input
-          placeholder="Username"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
+          type="email"
+          placeholder="Email address"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
         />
 
         <input
@@ -63,27 +65,34 @@ export default function Login({ setToken }) {
           onChange={(e) => setPassword(e.target.value)}
         />
 
-        <button className="primary-btn" onClick={login}>
-          Login
+        <button
+          className="auth-primary-btn"
+          onClick={handleLogin}
+          disabled={loading}
+        >
+          {loading ? "Logging in..." : "Login"}
         </button>
 
-        {error && <p className="error">{error}</p>}
+        {error && <p className="error-text">{error}</p>}
 
-        <div style={{ margin: "20px 0", textAlign: "center", color: "#888" }}>
-          — OR —
-        </div>
+        <div className="divider">OR</div>
 
-        <OAuthLogin />
+        <button
+          className="google-btn"
+          onClick={handleGoogleLogin}
+          disabled={loading}
+        >
+          <img
+            src="https://www.svgrepo.com/show/475656/google-color.svg"
+            alt="Google"
+          />
+          Continue with Google
+        </button>
 
-        <div className="link" style={{ marginTop: "15px" }}>
+        <p className="auth-link">
           Don’t have an account?{" "}
-          <button
-            className="text-btn"
-            onClick={() => navigate("/register")}
-          >
-            Register
-          </button>
-        </div>
+          <span onClick={() => navigate("/register")}>Register</span>
+        </p>
       </div>
     </div>
   );

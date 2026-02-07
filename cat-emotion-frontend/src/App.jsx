@@ -1,7 +1,10 @@
 import { useState, useEffect } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { onAuthStateChanged, signOut } from "firebase/auth";
 
+import { auth } from "./firebase";
 import Navbar from "./components/Navbar";
+import Footer from "./components/Footer";
 
 // Public pages
 import Landing from "./pages/Landing";
@@ -14,125 +17,118 @@ import Predict from "./pages/Predict";
 import History from "./pages/History";
 import NearbyServices from "./pages/NearbyServices";
 import CatZone from "./pages/CatZone";
-
-// ✅ Chatbot page (simple Chatbot.jsx)
 import Chatbot from "./pages/Chatbot";
 
 function App() {
-  const [token, setToken] = useState(null);
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  // Restore token on refresh
+  // 🔐 Listen to Firebase auth state
   useEffect(() => {
-    const savedToken = localStorage.getItem("token");
-    if (savedToken) {
-      setToken(savedToken);
-    }
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      setUser(currentUser);
+      setLoading(false);
+    });
+
+    return () => unsubscribe();
   }, []);
 
-  // Persist token
-  useEffect(() => {
-    if (token) {
-      localStorage.setItem("token", token);
-    } else {
-      localStorage.removeItem("token");
-    }
-  }, [token]);
-
-  const logout = () => {
-    setToken(null);
-    localStorage.removeItem("token");
+  // 🚪 Logout
+  const logout = async () => {
+    await signOut(auth);
+    setUser(null);
   };
 
-  const isAuthenticated = Boolean(token);
+  if (loading) {
+    return (
+      <div style={{ textAlign: "center", marginTop: "40vh" }}>
+        Loading...
+      </div>
+    );
+  }
+
+  const isAuthenticated = Boolean(user);
 
   return (
     <BrowserRouter>
-      <Navbar isAuthenticated={isAuthenticated} onLogout={logout} />
+      {/* ✅ Layout wrapper */}
+      <div className="app-layout">
+        <Navbar isAuthenticated={isAuthenticated} onLogout={logout} />
 
-      <Routes>
-        {/* ===== Public Routes ===== */}
-        <Route
-          path="/"
-          element={<Landing isAuthenticated={isAuthenticated} />}
-        />
+        {/* 🔄 Main content */}
+        <main style={{ flex: 1 }}>
+          <Routes>
+            {/* ===== Public Routes ===== */}
+            <Route
+              path="/"
+              element={<Landing isAuthenticated={isAuthenticated} />}
+            />
 
-        <Route
-          path="/login"
-          element={
-            isAuthenticated ? (
-              <Navigate to="/dashboard" />
-            ) : (
-              <Login setToken={setToken} />
-            )
-          }
-        />
+            <Route
+              path="/login"
+              element={
+                isAuthenticated ? <Navigate to="/dashboard" /> : <Login />
+              }
+            />
 
-        <Route
-          path="/register"
-          element={
-            isAuthenticated ? <Navigate to="/dashboard" /> : <Register />
-          }
-        />
+            <Route
+              path="/register"
+              element={
+                isAuthenticated ? <Navigate to="/dashboard" /> : <Register />
+              }
+            />
 
-        {/* ===== Protected Routes ===== */}
-        <Route
-          path="/dashboard"
-          element={
-            isAuthenticated ? (
-              <Dashboard token={token} />
-            ) : (
-              <Navigate to="/login" />
-            )
-          }
-        />
+            {/* ===== Protected Routes ===== */}
+            <Route
+              path="/dashboard"
+              element={
+                isAuthenticated ? <Dashboard /> : <Navigate to="/login" />
+              }
+            />
 
-        <Route
-          path="/predict"
-          element={
-            isAuthenticated ? (
-              <Predict token={token} />
-            ) : (
-              <Navigate to="/login" />
-            )
-          }
-        />
+            <Route
+              path="/predict"
+              element={
+                isAuthenticated ? <Predict /> : <Navigate to="/login" />
+              }
+            />
 
-        <Route
-          path="/history"
-          element={
-            isAuthenticated ? (
-              <History token={token} />
-            ) : (
-              <Navigate to="/login" />
-            )
-          }
-        />
+            <Route
+              path="/history"
+              element={
+                isAuthenticated ? <History /> : <Navigate to="/login" />
+              }
+            />
 
-        <Route
-          path="/nearby-services"
-          element={
-            isAuthenticated ? <NearbyServices /> : <Navigate to="/login" />
-          }
-        />
+            <Route
+              path="/nearby-services"
+              element={
+                isAuthenticated ? <NearbyServices /> : <Navigate to="/login" />
+              }
+            />
 
-        <Route
-          path="/catzone"
-          element={
-            isAuthenticated ? <CatZone /> : <Navigate to="/login" />
-          }
-        />
+            <Route
+              path="/catzone"
+              element={
+                isAuthenticated ? <CatZone /> : <Navigate to="/login" />
+              }
+            />
 
-        {/* ===== Independent Chatbot Page ===== */}
-        <Route
-          path="/chatbot"
-          element={
-            isAuthenticated ? <Chatbot /> : <Navigate to="/login" />
-          }
-        />
+            <Route
+              path="/chatbot"
+              element={
+                isAuthenticated ? <Chatbot /> : <Navigate to="/login" />
+              }
+            />
 
-        {/* ===== Fallback ===== */}
-        <Route path="*" element={<Navigate to="/" />} />
-      </Routes>
+            {/* ===== Fallback ===== */}
+            <Route path="*" element={<Navigate to="/" />} />
+          </Routes>
+        </main>
+
+        {/* ✅ Footer appears on ALL pages */}
+        <Footer />
+      </div>
     </BrowserRouter>
   );
 }

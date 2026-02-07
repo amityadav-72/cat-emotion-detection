@@ -1,11 +1,14 @@
 /* ===================== */
 /* GLOBAL RESET */
 /* ===================== */
+
 * {
   box-sizing: border-box;
 }
 
-html, body, #root {
+html,
+body,
+#root {
   margin: 0;
   min-height: 100vh;
   font-family: "Segoe UI", Arial, sans-serif;
@@ -14,90 +17,23 @@ html, body, #root {
 }
 
 /* ===================== */
-/* AUTH PAGES (LOGIN / REGISTER) */
-/* (UNCHANGED – SAFE) */
+/* ❌ REMOVE AUTH STYLES */
+/* Auth pages are now handled by Auth.css */
 /* ===================== */
 
-.page {
-  min-height: calc(100vh - 64px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.card {
-  background: white;
-  padding: 32px;
-  width: 100%;
-  max-width: 420px;
-  border-radius: 16px;
-  box-shadow: 0 20px 45px rgba(0,0,0,0.12);
-}
-
-.card h2 {
-  text-align: center;
-  margin-bottom: 20px;
-}
-
-input {
-  width: 100%;
-  padding: 12px;
-  margin-top: 12px;
-  border-radius: 8px;
-  border: 1px solid #d1d5db;
-}
-
-.primary-btn {
-  width: 100%;
-  padding: 12px;
-  margin-top: 16px;
-  background: #2563eb;
-  color: white;
-  border: none;
-  border-radius: 10px;
-  font-weight: 600;
-  cursor: pointer;
-}
-
-.primary-btn:disabled {
-  opacity: 0.6;
-}
-
-.text-btn {
-  background: none;
-  border: none;
-  color: #2563eb;
-  font-weight: 600;
-  cursor: pointer;
-  padding: 0;
-}
-
-.link {
-  margin-top: 16px;
-  text-align: center;
-  font-size: 14px;
-}
-
-.error {
-  color: #dc2626;
-  margin-top: 10px;
-}
-
-.message {
-  color: #16a34a;
-  margin-top: 10px;
-}
-
-.result {
-  margin-top: 16px;
-  padding: 14px;
-  background: #ecfeff;
-  border-radius: 10px;
-  font-size: 14px;
-}
+/* 🚫 REMOVED:
+.page
+.card
+input
+.primary-btn
+.text-btn
+.link
+.error
+.message
+*/
 
 /* ===================== */
-/* DASHBOARD (SCOPED – SAFE) */
+/* DASHBOARD (SCOPED ONLY) */
 /* ===================== */
 
 .dash-shell {
@@ -194,7 +130,7 @@ input {
   padding-top: 80px;
 }
 
-/* ---- PREDICTION CARD ---- */
+/* ---- CARD ---- */
 .dash-card {
   background: white;
   width: 380px;
@@ -209,7 +145,7 @@ input {
 }
 
 /* ===================== */
-/* MOBILE RESPONSIVE */
+/* MOBILE */
 /* ===================== */
 
 @media (max-width: 768px) {

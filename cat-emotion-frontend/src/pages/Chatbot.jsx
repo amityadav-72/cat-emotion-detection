@@ -1,9 +1,10 @@
 import { useState } from "react";
 import "../components/Chatbot.css";
+import Footer from "../components/Footer";
 
 const API_BASE = "http://127.0.0.1:8000";
 
-// 🐱 Predefined quick questions (suggestions only)
+// 🐱 Predefined quick questions
 const QUICK_QUESTIONS = [
   "What should I feed my cat?",
   "How often should I vaccinate my cat?",
@@ -61,54 +62,56 @@ export default function Chatbot() {
   };
 
   return (
-    <div className="catbot-container">
-      {/* Header */}
-      <div className="catbot-header">🐱 CatCare Chatbot</div>
+    <>
+      <div className="catbot-container">
+        {/* Header */}
+        <div className="catbot-header">🐱 CatCare Chatbot</div>
 
-      {/* Messages */}
-      <div className="catbot-messages">
-        {messages.map((m, i) => (
-          <div key={i} className={`msg ${m.role}`}>
-            {m.text}
-          </div>
-        ))}
-        {loading && <div className="msg bot typing">Typing…</div>}
-      </div>
+        {/* Messages */}
+        <div className="catbot-messages">
+          {messages.map((m, i) => (
+            <div key={i} className={`msg ${m.role}`}>
+              {m.text}
+            </div>
+          ))}
+          {loading && <div className="msg bot typing">Typing…</div>}
+        </div>
 
-      {/* Quick Questions (BOTTOM – NOT CHAT) */}
-      <div className="quick-questions bottom">
-        {QUICK_QUESTIONS.map((q, i) => (
-          <button
-            key={i}
-            className="quick-btn"
-            onClick={() => sendMessage(q)}
+        {/* Quick Questions */}
+        <div className="quick-questions bottom">
+          {QUICK_QUESTIONS.map((q, i) => (
+            <button
+              key={i}
+              className="quick-btn"
+              onClick={() => sendMessage(q)}
+              disabled={loading}
+            >
+              {q}
+            </button>
+          ))}
+        </div>
+
+        {/* Input */}
+        <div className="catbot-input">
+          <input
+            type="text"
+            placeholder="Type your message..."
+            value={input}
             disabled={loading}
+            onChange={(e) => setInput(e.target.value)}
+            onKeyDown={(e) => e.key === "Enter" && sendMessage()}
+          />
+
+          <button
+            className="send-btn"
+            onClick={() => sendMessage()}
+            disabled={loading}
+            aria-label="Send message"
           >
-            {q}
+            ➤
           </button>
-        ))}
+        </div>
       </div>
-
-      {/* Input */}
-      <div className="catbot-input">
-        <input
-          type="text"
-          placeholder="Type your message..."
-          value={input}
-          disabled={loading}
-          onChange={(e) => setInput(e.target.value)}
-          onKeyDown={(e) => e.key === "Enter" && sendMessage()}
-        />
-
-        <button
-          className="send-btn"
-          onClick={() => sendMessage()}
-          disabled={loading}
-          aria-label="Send message"
-        >
-          ➤
-        </button>
-      </div>
-    </div>
+    </>
   );
 }

@@ -21,7 +21,10 @@ const Navbar = ({ isAuthenticated, onLogout }) => {
       </div>
 
       {/* Hamburger */}
-      <div className="hamburger" onClick={() => setOpen(!open)}>
+      <div
+        className={`hamburger ${open ? "open" : ""}`}
+        onClick={() => setOpen(!open)}
+      >
         {open ? "✕" : "☰"}
       </div>
 
@@ -40,7 +43,6 @@ const Navbar = ({ isAuthenticated, onLogout }) => {
             <li><Link to="/nearby-services" onClick={closeMenu}>Nearby Services</Link></li>
             <li><Link to="/catzone" onClick={closeMenu}>Cat Zone</Link></li>
             <li><Link to="/chatbot" onClick={closeMenu}>Chatbot</Link></li>
-
             <li>
               <button className="logout-btn" onClick={handleLogout}>
                 Logout

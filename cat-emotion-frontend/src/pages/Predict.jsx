@@ -151,5 +151,6 @@ export default function Predict({ token }) {
 
       {error && <p className="predict-error">{error}</p>}
     </div>
+    
   );
 }

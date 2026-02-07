@@ -5,7 +5,9 @@ const Community = () => {
       <p>Welcome to the MeowMood community 🐱</p>
       <p>Here users will share tips, experiences, and care advice.</p>
     </div>
+       
   );
+
 };
 
 export default Community;

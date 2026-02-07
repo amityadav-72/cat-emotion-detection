@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import "../components/CatZone.css";
+import Footer from "../components/Footer";
 
 const API_BASE = "http://127.0.0.1:8000";
 
@@ -21,7 +22,7 @@ export default function CatZone() {
   /* ================= TIME FORMAT ================= */
   const formatPostTime = (createdAt) => {
     const now = new Date();
-    const postDate = new Date(createdAt + "Z"); // force UTC
+    const postDate = new Date(createdAt + "Z");
 
     const diffMs = now - postDate;
     const diffMin = Math.floor(diffMs / 60000);
@@ -142,99 +143,102 @@ export default function CatZone() {
   };
 
   return (
-    <div className="catzone-wrapper">
-      {/* ================= FEED ================= */}
-      <div className="cat-feed-grid">
-        {posts.length === 0 && (
-          <p className="empty-feed">No posts yet 🐾</p>
-        )}
+    <>
+      <div className="catzone-wrapper">
+        {/* ================= FEED ================= */}
+        <div className="cat-feed-grid">
+          {posts.length === 0 && (
+            <p className="empty-feed">No posts yet 🐾</p>
+          )}
 
-        {posts.map((post) => (
-          <div className="cat-card" key={post.id}>
-            <div className="cat-card-header">
-              <div>
-                <strong>{post.username}</strong>
-                {post.location && <span>{post.location}</span>}
-                <span className="post-time">
-                  {formatPostTime(post.created_at)}
-                </span>
+          {posts.map((post) => (
+            <div className="cat-card" key={post.id}>
+              <div className="cat-card-header">
+                <div>
+                  <strong>{post.username}</strong>
+                  {post.location && <span>{post.location}</span>}
+                  <span className="post-time">
+                    {formatPostTime(post.created_at)}
+                  </span>
+                </div>
+
+                {post.username === username && (
+                  <button
+                    className="delete-btn"
+                    onClick={() => handleDelete(post.id)}
+                    title="Delete post"
+                  >
+                    🗑
+                  </button>
+                )}
               </div>
 
-              {post.username === username && (
-                <button
-                  className="delete-btn"
-                  onClick={() => handleDelete(post.id)}
-                  title="Delete post"
-                >
-                  🗑
-                </button>
-              )}
+              <img
+                src={`${API_BASE}/${post.image_path}`}
+                alt="Cat post"
+                className="cat-card-image"
+                loading="lazy"
+              />
+
+              <div className="cat-card-footer">
+                <p>{post.caption}</p>
+              </div>
             </div>
+          ))}
+        </div>
 
-            <img
-              src={`${API_BASE}/${post.image_path}`}
-              alt="Cat post"
-              className="cat-card-image"
-              loading="lazy"
-            />
+        {/* ================= ADD BUTTON ================= */}
+        <button
+          className="add-post-btn"
+          onClick={() => setShowModal(true)}
+          title="Create post"
+        >
+          +
+        </button>
 
-            <div className="cat-card-footer">
-              <p>{post.caption}</p>
+        {/* ================= MODAL ================= */}
+        {showModal && (
+          <div className="modal-overlay" onClick={() => setShowModal(false)}>
+            <div className="modal-card" onClick={(e) => e.stopPropagation()}>
+              <button
+                className="close-modal"
+                onClick={() => setShowModal(false)}
+              >
+                ✕
+              </button>
+
+              <h3>Create a Cat Post 🐱</h3>
+
+              <form onSubmit={handleSubmit}>
+                <textarea
+                  placeholder="What's your cat feeling?"
+                  value={caption}
+                  onChange={(e) => setCaption(e.target.value)}
+                />
+
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageChange}
+                />
+
+                {preview && (
+                  <img
+                    src={preview}
+                    alt="Preview"
+                    className="image-preview"
+                  />
+                )}
+
+                <button type="submit" disabled={loading}>
+                  {loading ? "Posting..." : "Post"}
+                </button>
+              </form>
             </div>
           </div>
-        ))}
+        )}
       </div>
 
-      {/* ================= ADD BUTTON ================= */}
-      <button
-        className="add-post-btn"
-        onClick={() => setShowModal(true)}
-        title="Create post"
-      >
-        +
-      </button>
-
-      {/* ================= MODAL ================= */}
-      {showModal && (
-        <div className="modal-overlay" onClick={() => setShowModal(false)}>
-          <div className="modal-card" onClick={(e) => e.stopPropagation()}>
-            <button
-              className="close-modal"
-              onClick={() => setShowModal(false)}
-            >
-              ✕
-            </button>
-
-            <h3>Create a Cat Post 🐱</h3>
-
-            <form onSubmit={handleSubmit}>
-              <textarea
-                placeholder="What's your cat feeling?"
-                value={caption}
-                onChange={(e) => setCaption(e.target.value)}
-              />
-
-              <input
-                type="file"
-                accept="image/*"
-                onChange={handleImageChange}
-              />
-
-              {preview && (
-                <img
-                  src={preview}
-                  alt="Preview"
-                  className="image-preview"
-                />
-              )}
-
-              <button type="submit" disabled={loading}>
-                {loading ? "Posting..." : "Post"}
-              </button>
-            </form>
-          </div>
-        </div>
-      )}
-    </div>
+    </>
   );
 }
