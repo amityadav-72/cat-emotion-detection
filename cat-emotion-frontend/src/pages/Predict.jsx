@@ -1,7 +1,10 @@
 import { useState } from "react";
+import { getAuth } from "firebase/auth";
 import "../components/Predict.css";
 
-export default function Predict({ token }) {
+export default function Predict() {
+  const auth = getAuth();
+
   const [imageFile, setImageFile] = useState(null);
   const [audioFile, setAudioFile] = useState(null);
 
@@ -31,15 +34,27 @@ export default function Predict({ token }) {
       return;
     }
 
+    const user = auth.currentUser;
+    if (!user) {
+      setError("User not logged in.");
+      return;
+    }
+
     setLoadingImage(true);
 
-    const formData = new FormData();
-    formData.append("file", imageFile);
-
     try {
+      // 🔥 THIS IS THE FIX
+      const token = await user.getIdToken();
+      console.log("🔥 Firebase Token:", token);
+
+      const formData = new FormData();
+      formData.append("file", imageFile);
+
       const res = await fetch("http://127.0.0.1:8000/image/predict", {
         method: "POST",
-        headers: { Authorization: `Bearer ${token}` },
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
         body: formData,
       });
 
@@ -47,7 +62,7 @@ export default function Predict({ token }) {
       if (!res.ok) throw new Error();
 
       setImageResult(data);
-    } catch {
+    } catch (err) {
       setError("Image prediction failed.");
     } finally {
       setLoadingImage(false);
@@ -67,15 +82,26 @@ export default function Predict({ token }) {
       return;
     }
 
+    const user = auth.currentUser;
+    if (!user) {
+      setError("User not logged in.");
+      return;
+    }
+
     setLoadingAudio(true);
 
-    const formData = new FormData();
-    formData.append("file", audioFile);
-
     try {
+      // 🔥 SAME FIX FOR AUDIO
+      const token = await user.getIdToken();
+
+      const formData = new FormData();
+      formData.append("file", audioFile);
+
       const res = await fetch("http://127.0.0.1:8000/audio/predict", {
         method: "POST",
-        headers: { Authorization: `Bearer ${token}` },
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
         body: formData,
       });
 
@@ -105,11 +131,7 @@ export default function Predict({ token }) {
           <input type="file" accept="image/*" onChange={handleImageChange} />
 
           {imagePreview && (
-            <img
-              src={imagePreview}
-              alt="Preview"
-              className="image-preview"
-            />
+            <img src={imagePreview} alt="Preview" className="image-preview" />
           )}
 
           <button onClick={predictImage} disabled={loadingImage}>
@@ -119,10 +141,7 @@ export default function Predict({ token }) {
           {imageResult && (
             <div className="result-box">
               <p><b>Emotion:</b> {imageResult.predicted_emotion}</p>
-              <p>
-                <b>Confidence:</b>{" "}
-                {Math.round(imageResult.confidence * 100)}%
-              </p>
+              <p><b>Confidence:</b> {Math.round(imageResult.confidence * 100)}%</p>
             </div>
           )}
         </div>
@@ -140,10 +159,7 @@ export default function Predict({ token }) {
           {audioResult && (
             <div className="result-box">
               <p><b>Emotion:</b> {audioResult.predicted_emotion}</p>
-              <p>
-                <b>Confidence:</b>{" "}
-                {Math.round(audioResult.confidence * 100)}%
-              </p>
+              <p><b>Confidence:</b> {Math.round(audioResult.confidence * 100)}%</p>
             </div>
           )}
         </div>
@@ -151,6 +167,5 @@ export default function Predict({ token }) {
 
       {error && <p className="predict-error">{error}</p>}
     </div>
-    
   );
 }

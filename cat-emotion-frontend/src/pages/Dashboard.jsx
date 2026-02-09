@@ -1,5 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { getAuth } from "firebase/auth";
+
 import Footer from "../components/Footer";
 import EmotionLineChart from "../components/EmotionLineChart";
 import EmotionPieChart from "../components/EmotionPieChart";
@@ -36,29 +38,44 @@ const FILTERS = {
   "30d": 30,
 };
 
-export default function Dashboard({ token }) {
+export default function Dashboard() {
   const navigate = useNavigate();
+  const auth = getAuth();
+
   const [imageHistory, setImageHistory] = useState([]);
   const [audioHistory, setAudioHistory] = useState([]);
   const [filter, setFilter] = useState("7d");
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!token) {
-      setLoading(false);
-      return;
-    }
+    const fetchAnalytics = async () => {
+      const user = auth.currentUser;
+      if (!user) {
+        setLoading(false);
+        return;
+      }
 
-    Promise.all([
-      fetch("http://127.0.0.1:8000/image/history", {
-        headers: { Authorization: `Bearer ${token}` },
-      }).then((r) => r.json()),
+      try {
+        // 🔥 ALWAYS GET TOKEN HERE
+        const token = await user.getIdToken();
+        console.log("🔥 Dashboard token:", token);
 
-      fetch("http://127.0.0.1:8000/audio/history", {
-        headers: { Authorization: `Bearer ${token}` },
-      }).then((r) => r.json()),
-    ])
-      .then(([imageData, audioData]) => {
+        const [imageRes, audioRes] = await Promise.all([
+          fetch("http://127.0.0.1:8000/image/history", {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }),
+          fetch("http://127.0.0.1:8000/audio/history", {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }),
+        ]);
+
+        const imageData = await imageRes.json();
+        const audioData = await audioRes.json();
+
         setImageHistory(
           imageData.map((h) => ({
             ...h,
@@ -72,14 +89,21 @@ export default function Dashboard({ token }) {
             emotion: EMOTION_MAP[h.emotion] || "Relaxed",
           }))
         );
-      })
-      .finally(() => setLoading(false));
-  }, [token]);
+      } catch (err) {
+        console.error("Dashboard fetch error:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchAnalytics();
+  }, []);
 
   /* ⏱️ Filter logic */
   const applyFilter = (data) => {
     const days = FILTERS[filter];
     const now = new Date();
+
     return data.filter(
       (h) =>
         (now - new Date(h.timestamp)) / (1000 * 60 * 60 * 24) <= days
@@ -121,19 +145,18 @@ export default function Dashboard({ token }) {
         ) : (
           <>
             {/* IMAGE ANALYTICS */}
-          <h2 className="dashboard-title">🖼️ Image Emotion Analysis</h2>
-<div className="dashboard-grid">
-  <EmotionLineChart history={filteredImage} source="IMAGE" />
-  <EmotionPieChart history={filteredImage} source="IMAGE" />
-</div>
+            <h2 className="dashboard-title">🖼️ Image Emotion Analysis</h2>
+            <div className="dashboard-grid">
+              <EmotionLineChart history={filteredImage} source="IMAGE" />
+              <EmotionPieChart history={filteredImage} source="IMAGE" />
+            </div>
 
-<h2 className="dashboard-title">🔊 Audio Emotion Analysis</h2>
-<div className="dashboard-grid">
-  <EmotionLineChart history={filteredAudio} source="AUDIO" />
-  <EmotionPieChart history={filteredAudio} source="AUDIO" />
-</div>
-
-
+            {/* AUDIO ANALYTICS */}
+            <h2 className="dashboard-title">🔊 Audio Emotion Analysis</h2>
+            <div className="dashboard-grid">
+              <EmotionLineChart history={filteredAudio} source="AUDIO" />
+              <EmotionPieChart history={filteredAudio} source="AUDIO" />
+            </div>
 
             {/* NOTE */}
             <div className="dashboard-note">
@@ -159,6 +182,7 @@ export default function Dashboard({ token }) {
         </section>
       </div>
 
+      <Footer />
     </>
   );
 }

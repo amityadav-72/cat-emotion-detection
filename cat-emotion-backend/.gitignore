@@ -3,6 +3,7 @@
 # =====================
 .DS_Store
 Thumbs.db
+desktop.ini
 .vscode/
 .idea/
 
@@ -36,6 +37,7 @@ __pycache__/
 *.pyd
 *.sqlite3
 *.db
+app.db
 
 # =====================
 # Virtual Environments
@@ -60,3 +62,28 @@ pytest_cache/
 # Build tools
 # =====================
 build/
+
+# =====================
+# Firebase (CRITICAL - NEVER COMMIT)
+# =====================
+firebase_service_account.json
+
+# =====================
+# Uploads / Media
+# =====================
+uploads/
+
+# =====================
+# ML Models / Weights
+# =====================
+*.pkl
+*.joblib
+*.h5
+*.pt
+*.onnx
+
+# =====================
+# Temp files
+# =====================
+tmp/
+temp/

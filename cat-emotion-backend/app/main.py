@@ -14,8 +14,7 @@ from fastapi.staticfiles import StaticFiles
 # Database
 from app.database import Base, engine
 
-# Routers
-from app.routes.auth_routes import router as auth_router
+# Routers (NO auth_routes)
 from app.routes.audio_routes import router as audio_router
 from app.routes.image_routes import router as image_router
 from app.routes.location_routes import router as location_router
@@ -62,7 +61,6 @@ def health():
     return {"ok": True}
 
 # ---------- ROUTERS ----------
-app.include_router(auth_router)        # Firebase → JWT
 app.include_router(audio_router)
 app.include_router(image_router)
 app.include_router(location_router)

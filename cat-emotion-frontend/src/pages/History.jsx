@@ -1,23 +1,42 @@
 import { useEffect, useState } from "react";
+import { getAuth } from "firebase/auth";
 import "../components/History.css";
 
-export default function History({ token }) {
+export default function History() {
+  const auth = getAuth();
+
   const [history, setHistory] = useState([]);
   const [filter, setFilter] = useState("ALL");
 
   useEffect(() => {
-    if (!token) return;
+    const fetchHistory = async () => {
+      const user = auth.currentUser;
+      if (!user) {
+        console.warn("User not logged in");
+        return;
+      }
 
-    Promise.all([
-      fetch("http://127.0.0.1:8000/image/history", {
-        headers: { Authorization: `Bearer ${token}` },
-      }).then((r) => r.json()),
+      // 🔥 THIS IS THE FIX
+      const token = await user.getIdToken();
+      console.log("🔥 History token:", token);
 
-      fetch("http://127.0.0.1:8000/audio/history", {
-        headers: { Authorization: `Bearer ${token}` },
-      }).then((r) => r.json()),
-    ])
-      .then(([imageData, audioData]) => {
+      try {
+        const [imageRes, audioRes] = await Promise.all([
+          fetch("http://127.0.0.1:8000/image/history", {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }),
+          fetch("http://127.0.0.1:8000/audio/history", {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }),
+        ]);
+
+        const imageData = await imageRes.json();
+        const audioData = await audioRes.json();
+
         const taggedImage = imageData.map((h) => ({
           ...h,
           type: "IMAGE",
@@ -33,11 +52,13 @@ export default function History({ token }) {
         );
 
         setHistory(merged);
-      })
-      .catch((err) => {
+      } catch (err) {
         console.error("History fetch error:", err);
-      });
-  }, [token]);
+      }
+    };
+
+    fetchHistory();
+  }, []);
 
   const filteredHistory =
     filter === "ALL"
