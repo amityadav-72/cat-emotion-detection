@@ -1,0 +1,32 @@
+.footer {
+  background: #ffffff !important;   /* 🔥 FORCE override */
+  padding: 10px 8px;
+  text-align: center;
+  border-top: 1px solid #e5e7eb;
+
+  width: 100%;
+  position: relative;
+  z-index: 20;
+}
+
+.footer p {
+  margin: 2px 0;
+  font-size: 13px;
+  color: #111827;
+  line-height: 1.4;
+}
+
+.footer-sub {
+  font-size: 12px;
+  color: #374151;
+}
+
+.footer-link {
+  color: #2563eb;              /* same blue as buttons */
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.footer-link:hover {
+  text-decoration: underline;
+}

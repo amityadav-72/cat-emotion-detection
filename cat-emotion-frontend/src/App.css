@@ -1,0 +1,467 @@
+/* ===== GLOBAL RESET ===== */
+* {
+  box-sizing: border-box;
+}
+
+html, body, #root {
+  margin: 0;
+  min-height: 100vh;
+  font-family: "Segoe UI", Arial, sans-serif;
+  background: #f1f5f9;
+  color: #1f2937;
+}
+
+/* ===== COMMON LAYOUT ===== */
+.page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ===== AUTH CARDS ===== */
+.card {
+  background: white;
+  padding: 28px;
+  width: 100%;
+  max-width: 400px;
+  border-radius: 14px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+}
+
+input, button {
+  width: 100%;
+  padding: 12px;
+  margin-top: 12px;
+  font-size: 14px;
+}
+
+button {
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.primary-btn {
+  background: #1f2937;
+  color: white;
+  font-weight: 600;
+}
+
+.secondary {
+  background: #e5e7eb;
+}
+
+.text-btn {
+  background: none;
+  border: none;
+  color: #2563eb;
+  cursor: pointer;
+}
+
+.error {
+  color: #dc2626;
+  margin-top: 10px;
+}
+
+.message {
+  color: #16a34a;
+  margin-top: 10px;
+}
+
+/* ===== NAVBAR ===== */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 32px;
+  background-color: #fde047;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.navbar-logo {
+  font-size: 22px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.navbar-links {
+  list-style: none;
+  display: flex;
+  gap: 24px;
+  align-items: center;
+}
+
+.navbar-links a {
+  text-decoration: none;
+  color: #1f2937;
+  font-weight: 500;
+}
+
+.logout-btn {
+  background: #1f2937;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-weight: 500;
+}
+
+/* ===== LANDING PAGE ===== */
+.landing-hero {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 90px 10%;
+  background: linear-gradient(135deg, #fef9c3, #fde047);
+}
+
+.landing-text {
+  max-width: 520px;
+}
+
+.landing-text h1 {
+  font-size: 46px;
+}
+
+.landing-text span {
+  color: #f59e0b;
+}
+
+.landing-text p {
+  margin: 20px 0;
+  font-size: 18px;
+  color: #374151;
+}
+
+.landing-buttons {
+  display: flex;
+  gap: 16px;
+}
+
+.cta-primary {
+  background: #1f2937;
+  color: white;
+  padding: 14px 28px;
+  border-radius: 10px;
+  font-weight: 600;
+}
+
+.cta-secondary {
+  background: transparent;
+  border: 2px solid #1f2937;
+  padding: 14px 28px;
+  border-radius: 10px;
+  font-weight: 600;
+}
+
+.landing-image img {
+  width: 300px;          
+  max-width: 100%;
+  border-radius: 16px;   
+  box-shadow: 0 20px 40px rgba(0,0,0,0.15); 
+  animation: float 4s ease-in-out infinite;
+}
+
+
+@keyframes float {
+  0% { transform: translateY(0); }
+  50% { transform: translateY(-12px); }
+  100% { transform: translateY(0); }
+}
+
+/* ===== HOW IT WORKS ===== */
+.how-section {
+  padding: 80px 10%;
+  background: #fff;
+  text-align: center;
+}
+
+.how-grid {
+  display: flex;
+  justify-content: center;
+  gap: 32px;
+  margin-top: 40px;
+  flex-wrap: wrap;
+}
+
+.how-card {
+  background: #fffce8;
+  padding: 30px;
+  border-radius: 14px;
+  width: 280px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.how-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+}
+
+/* ===== DASHBOARD ===== */
+.dashboard-hero {
+  padding: 80px 10%;
+  text-align: center;
+  background: linear-gradient(135deg, #fef9c3, #fde047);
+}
+
+.dashboard-hero h1 {
+  font-size: 42px;
+}
+
+.dashboard-hero p {
+  margin: 20px 0;
+  font-size: 18px;
+  color: #374151;
+}
+
+.dashboard-features {
+  padding: 70px 10%;
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  flex-wrap: wrap;
+}
+
+.dashboard-card {
+  background: #fffce8;
+  padding: 30px;
+  border-radius: 16px;
+  width: 280px;
+  text-align: center;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+  transition: transform 0.3s ease;
+}
+
+.dashboard-card:hover {
+  transform: translateY(-8px);
+}
+
+/* ===== PREDICT PAGE ===== */
+.predict-page {
+  padding: 60px 10%;
+  text-align: center;
+}
+
+.predict-card {
+  background: #fffce8;
+  padding: 30px;
+  border-radius: 14px;
+  max-width: 420px;
+  margin: 0 auto;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+}
+
+.image-preview {
+  width: 100%;
+  border-radius: 10px;
+  margin: 20px 0;
+}
+
+.result-card {
+  background: white;
+  padding: 32px;
+  border-radius: 16px;
+
+  max-width: 900px;
+  margin: 40px auto 0;
+
+  box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+}
+
+
+
+.emotion span {
+  color: #f59e0b;
+  font-weight: bold;
+}
+
+.bar {
+  height: 10px;
+  background: #e5e7eb;
+  border-radius: 10px;
+  margin-top: 8px;
+  overflow: hidden;
+}
+
+.fill {
+  height: 100%;
+  background: linear-gradient(90deg, #fde047, #f59e0b);
+}
+
+/* ===== FOOTER ===== */
+.footer {
+  margin-top: 80px;
+  padding: 30px;
+  text-align: center;
+  background: #1f2937;
+  color: white;
+}
+
+.footer-sub {
+  font-size: 14px;
+  opacity: 0.8;
+}
+
+
+/* ===== RESULT DETAILS ===== */
+.explanation {
+  margin-top: 20px;
+  background: #f8fafc;
+  padding: 16px;
+  border-radius: 10px;
+  text-align: left;
+}
+
+.explanation h4 {
+  margin-bottom: 6px;
+}
+
+.probabilities {
+  margin-top: 24px;
+  text-align: left;
+}
+
+.prob-row {
+  margin-bottom: 12px;
+}
+
+/* ===== HISTORY TABLE LAYOUT ===== */
+/* ===== HISTORY GRID ===== */
+.history-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 40px;
+}
+
+
+/* ===== CARD HEADER ===== */
+.history-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.history-title {
+  text-align: center;
+  font-weight: 700;
+  flex: 1;
+}
+
+/* ===== TABLE ===== */
+.history-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+   flex-grow: 1;
+}
+
+.history-table th,
+.history-table td {
+  padding: 14px 12px;
+  font-size: 14px;
+  border-bottom: 1px solid #eef2f7;
+}
+
+.history-table th {
+  background: #f8fafc;
+  font-weight: 600;
+  text-align: left;
+}
+
+.history-table td:nth-child(1) {
+  max-width: 220px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.history-table td:nth-child(3),
+.history-table th:nth-child(3) {
+  text-align: center;
+}
+
+.history-table td:nth-child(4),
+.history-table th:nth-child(4) {
+  text-align: right;
+  white-space: nowrap;
+  font-size: 13px;
+  color: #555;
+}
+
+.history-table tbody tr:hover {
+  background: #f9fafb;
+}
+
+/* ===== EMOTION TAG ===== */
+.emotion-tag {
+  padding: 4px 12px;
+  border-radius: 999px;
+  font-size: 13px;
+  background: #f1f5f9;
+  white-space: nowrap;
+}
+
+/* ===== DOWNLOAD ICON ===== */
+.icon-btn {
+  width: 36px;
+  height: 36px;
+  background: #f1f5f9;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.icon-btn:hover {
+  background: #e5e7eb;
+}
+
+/* ===== CARD PADDING ===== */
+.result-card {
+  padding: 32px;
+}
+
+/* ===== FINAL CTA SECTION ===== */
+.landing-cta {
+  padding: 80px 10%;
+  background: linear-gradient(135deg, #1f2937, #111827);
+  color: white;
+  text-align: center;
+}
+
+.landing-cta-inner {
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.landing-cta h2 {
+  font-size: 36px;
+  margin-bottom: 12px;
+}
+
+.landing-cta p {
+  font-size: 18px;
+  margin-bottom: 32px;
+  opacity: 0.9;
+}
+
+.landing-cta .cta-primary {
+  padding: 14px 36px;
+  font-size: 16px;
+  border-radius: 12px;
+}
+
+/* ===== LANDING IMAGE RESPONSIVE ===== */
+@media (max-width: 1024px) {
+  .landing-image img {
+    width: 260px;
+  }
+}
+
+@media (max-width: 768px) {
+  .landing-image img {
+    width: 220px;
+  }
+}

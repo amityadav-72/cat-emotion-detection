@@ -1,0 +1,11 @@
+.pie-wrapper {
+  height: 220px;
+  width: 100%;
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .pie-wrapper {
+    height: 180px;
+  }
+}

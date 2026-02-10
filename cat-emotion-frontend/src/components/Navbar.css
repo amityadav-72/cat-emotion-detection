@@ -1,0 +1,110 @@
+/* =====================
+   NAVBAR BASE
+===================== */
+
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 24px;
+  background: #fde047;
+  position: relative;
+  z-index: 1000;
+  border-bottom: 1px solid #facc15;
+}
+
+.navbar-logo {
+  font-size: 22px;
+  font-weight: 700;
+  cursor: pointer;
+  color: #2563eb;
+}
+
+/* =====================
+   LINKS (DESKTOP)
+===================== */
+
+.navbar-links {
+  list-style: none;
+  display: flex;
+  gap: 18px;
+}
+
+.navbar-links li a {
+  text-decoration: none;
+  color: #1f2933;
+  font-weight: 500;
+}
+
+.navbar-links li a:hover {
+  color: #2563eb;
+}
+
+/* =====================
+   LOGOUT
+===================== */
+
+.logout-btn {
+  background: #dc2626;
+  color: white;
+  border: none;
+  padding: 6px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+/* =====================
+   HAMBURGER
+===================== */
+
+.hamburger {
+  display: none;
+  font-size: 28px;
+  cursor: pointer;
+  color: #1f2933;
+
+  position: absolute;
+  right: 24px;
+  top: 50%;
+  transform: translateY(-50%);
+
+  z-index: 3000;
+}
+
+/* =====================
+   MOBILE MENU (CORRECT WAY)
+===================== */
+
+@media (max-width: 768px) {
+  .hamburger {
+    display: block;
+  }
+
+  .navbar-links {
+    position: absolute;
+    top: 60px;
+    left: 0;
+    width: 100%;
+    background: #fffbea;
+
+    flex-direction: column;
+    padding: 24px;
+    text-align: center;
+    gap: 18px;
+
+    /* 🔥 REAL HIDE */
+    transform: translateY(-20px);
+    opacity: 0;
+    pointer-events: none;
+
+    transition: all 0.25s ease;
+    z-index: 2000;
+  }
+
+  /* 🔥 REAL SHOW */
+  .navbar-links.active {
+    transform: translateY(0);
+    opacity: 1;
+    pointer-events: auto;
+  }
+}

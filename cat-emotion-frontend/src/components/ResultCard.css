@@ -1,0 +1,53 @@
+.result-card {
+  background: #ffffff;
+  border-radius: 14px;
+  padding: 1.5rem;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+  max-width: 420px;
+  margin: auto;
+}
+
+.result-title {
+  text-align: center;
+  color: #444;
+  margin-bottom: 1rem;
+}
+
+/* Emotion Highlight */
+.emotion-highlight {
+  text-align: center;
+  font-size: 2rem;
+  font-weight: bold;
+  color: #ff6f91;
+  margin-bottom: 1rem;
+}
+
+/* Explanation */
+.explanation {
+  margin-top: 1.2rem;
+  background: #f9f9f9;
+  padding: 1rem;
+  border-radius: 10px;
+}
+
+.explanation h4 {
+  margin-bottom: 0.4rem;
+  font-size: 1rem;
+  color: #333;
+}
+
+.explanation p {
+  font-size: 0.9rem;
+  color: #555;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .result-card {
+    padding: 1.2rem;
+  }
+
+  .emotion-highlight {
+    font-size: 1.6rem;
+  }
+}

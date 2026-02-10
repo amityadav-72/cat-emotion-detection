@@ -1,0 +1,174 @@
+/* =========================
+   Auth Layout
+========================= */
+
+.auth-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #fff7ed, #fef2f2);
+  padding: 16px;
+}
+
+/* =========================
+   Auth Card
+========================= */
+
+.auth-card {
+  width: 100%;
+  max-width: 380px;
+  background: #ffffff;
+  padding: 28px;
+  border-radius: 18px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.1);
+}
+
+.auth-card h2 {
+  text-align: center;
+  margin-bottom: 24px;
+  font-weight: 800;
+  font-size: 22px;
+  color: #111827;
+}
+
+/* =========================
+   Inputs
+========================= */
+
+.auth-card input {
+  width: 100%;
+  display: block;
+  padding: 14px 16px;        /* 🔑 baseline size */
+  margin-bottom: 16px;
+  border-radius: 14px;
+  border: 1px solid #e5e7eb;
+  font-size: 15px;
+  background: #eef4ff;
+}
+
+.auth-card input:focus {
+  outline: none;
+  border-color: #2563eb;
+  background: #ffffff;
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.15);
+}
+
+/* =========================
+   AUTH PRIMARY BUTTON
+   (Same size as inputs)
+========================= */
+
+.auth-primary-btn {
+  width: 100%;
+  display: block;
+  padding: 14px 16px;        /* 🔥 SAME AS INPUT */
+  margin-top: 4px;
+
+  border: none;
+  border-radius: 14px;
+  background: #2563eb;
+  color: #ffffff;
+
+  font-weight: 700;
+  font-size: 16px;
+  text-align: center;
+
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.auth-primary-btn:hover {
+  background: #1d4ed8;
+}
+
+.auth-primary-btn:active {
+  transform: scale(0.97);
+}
+
+.auth-primary-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* =========================
+   Divider
+========================= */
+
+.divider {
+  margin: 22px 0;
+  text-align: center;
+  font-size: 13px;
+  color: #9ca3af;
+}
+
+/* =========================
+   Google Button
+========================= */
+
+.google-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+
+  padding: 14px 16px;        /* SAME SIZE */
+  border-radius: 14px;
+
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+
+  font-weight: 600;
+  font-size: 15px;
+  color: #111827;
+
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.google-btn img {
+  width: 20px;
+  height: 20px;
+}
+
+.google-btn:hover {
+  background: #f9fafb;
+}
+
+.google-btn:active {
+  transform: scale(0.98);
+}
+
+/* =========================
+   Error Text
+========================= */
+
+.error-text {
+  margin-top: 12px;
+  text-align: center;
+  color: #dc2626;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+/* =========================
+   Auth Links
+========================= */
+
+.auth-link {
+  margin-top: 18px;
+  text-align: center;
+  font-size: 14px;
+  color: #374151;
+}
+
+.auth-link span {
+  color: #2563eb;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.auth-link span:hover {
+  text-decoration: underline;
+}
